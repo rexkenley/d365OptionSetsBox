@@ -1,2 +1,2 @@
-# d365OptionSetBox
-An enhanced option set box for single and multiple
+# d365OptionSetsBox
+An enhanced option sets box for single and multiple
