@@ -9,6 +9,7 @@ import {
 } from "office-ui-fabric-react";
 import { Fabric } from "office-ui-fabric-react/lib/Fabric";
 import { TagPicker } from "office-ui-fabric-react/lib/Pickers";
+import { CommandBar } from "office-ui-fabric-react/lib/CommandBar";
 import { initializeIcons } from "@uifabric/icons";
 
 initializeIcons();
@@ -44,7 +45,6 @@ const OptionSetsBox = props => {
       onChange
     } = props,
     divRef = React.useRef(),
-    tagRef = React.useRef(),
     _optionSets = optionSets
       ? Object.keys(optionSets).map(k => ({
           key: optionSets[k],
@@ -67,14 +67,11 @@ const OptionSetsBox = props => {
     [_showAvailable, setShowAvailable] = useState(false),
     [_selectedItems, setSelectedItems] = useState([]),
     onClick = val => {
-      const { current } = tagRef;
-
-      !isMultipleSelect && current.removeItems(current.selection.getItems());
-
-      current.addItem(val);
-      onChange && onChange(current.items);
-
-      !isMultipleSelect && setShowAvailable(false);
+      if (isMultipleSelect) setSelectedItems(_selectedItems.concat([val]));
+      else {
+        setSelectedItems([val]);
+        setShowAvailable(false);
+      }
     };
 
   useEffect(() => {
@@ -89,11 +86,10 @@ const OptionSetsBox = props => {
       <Stack tokens={{ childrenGap: 8 }} horizontal verticalAlign="end">
         <div ref={divRef}>
           <TagPicker
-            componentRef={tagRef}
             disabled={disabled}
-            items={_selectedItems}
             onResolveSuggestions={onFilterChanged}
             getTextFromItem={getTextFromItem}
+            selectedItems={_selectedItems}
             onChange={items => {
               setSelectedItems(items);
               onChange && onChange(items);
@@ -115,36 +111,65 @@ const OptionSetsBox = props => {
       <Callout
         target={divRef}
         coverTarget={false}
-        calloutMaxWidth={350}
+        calloutWidth={350}
         directionalHint={DirectionalHint.rightTopEdge}
         hidden={!_showAvailable}
         onDismiss={() => {
           setShowAvailable(false);
         }}
       >
-        <Stack tokens={{ childrenGap: 8 }} horizontal wrap verticalAlign="end">
-          {_optionSets &&
-            _optionSets
-              .filter(o => _selectedItems.every(s => s.key !== o.key))
-              .map(o => (
-                <ActionButton
-                  iconProps={{ iconName: isMultipleSelect ? "Add" : "Switch" }}
-                  key={o.key}
-                  text={o.name}
-                  onClick={() => {
-                    onClick(o);
-                  }}
-                />
-              ))}
-        </Stack>
         {isMultipleSelect && (
-          <PrimaryButton
-            text="Select All"
-            onClick={() => {
-              setShowAvailable(false);
-            }}
+          <CommandBar
+            items={[
+              {
+                key: "selectAll",
+                text: "Select All",
+                onClick: () => {
+                  setSelectedItems(
+                    _selectedItems.concat(
+                      _optionSets.filter(o =>
+                        _selectedItems.every(s => s.key !== o.key)
+                      )
+                    )
+                  );
+                  setShowAvailable(false);
+                }
+              },
+              {
+                key: "removeAll",
+                text: "Remove All",
+                onClick: () => {
+                  setSelectedItems([]);
+                  setShowAvailable(false);
+                }
+              }
+            ]}
+            farItems={[
+              {
+                key: "close",
+                iconOnly: true,
+                iconProps: { iconName: "ChromeClose" },
+                onClick: () => {
+                  setShowAvailable(false);
+                }
+              }
+            ]}
           />
         )}
+        <Stack tokens={{ childrenGap: 8 }} horizontal wrap verticalAlign="end">
+          {_optionSets
+            .filter(o => _selectedItems.every(s => s.key !== o.key))
+            .map(o => (
+              <ActionButton
+                iconProps={{ iconName: isMultipleSelect ? "Add" : "Switch" }}
+                key={o.key}
+                text={o.name}
+                onClick={() => {
+                  onClick(o);
+                }}
+              />
+            ))}
+        </Stack>
       </Callout>
     </Fabric>
   );

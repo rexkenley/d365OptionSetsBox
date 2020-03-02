@@ -12,9 +12,13 @@ storiesOf("OptionSetsBox", module)
   .add("with props hidden", () => <OptionSetsBox hidden />)
   .add("with props disabled", () => <OptionSetsBox disabled />)
   .add("with props optionSets", () => <OptionSetsBox optionSets={optionSets} />)
-  .add("with props onSelectionChange and optionSets", () => (
+  .add("with props onChange and optionSets", () => (
     <OptionSetsBox onChange={action("onChange")} optionSets={optionSets} />
   ))
-  .add("with props isMultipleSelect and optionSets", () => (
-    <OptionSetsBox isMultipleSelect optionSets={optionSets} />
+  .add("with props isMultipleSelect, onChange and optionSets", () => (
+    <OptionSetsBox
+      isMultipleSelect
+      onChange={action("onChange")}
+      optionSets={optionSets}
+    />
   ));
