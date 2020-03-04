@@ -4,7 +4,6 @@ import {
   Callout,
   DirectionalHint,
   IconButton,
-  PrimaryButton,
   ActionButton
 } from "office-ui-fabric-react";
 import { Fabric } from "office-ui-fabric-react/lib/Fabric";
@@ -19,7 +18,7 @@ initializeIcons();
 /**
  * @module optionSetsBox/OptionSetsBoxProps
  * @typedef {{}} OptionSetsBoxProps
- * @property {{}} optionSets
+ * @property {[{}]} optionSets
  * @property {string} value
  * @property {boolean} isMultipleSelect
  * @property {boolean} disabled
@@ -45,15 +44,9 @@ const OptionSetsBox = props => {
       onChange
     } = props,
     divRef = React.useRef(),
-    _optionSets = optionSets
-      ? Object.keys(optionSets).map(k => ({
-          key: optionSets[k],
-          name: k
-        }))
-      : [],
-    onFilterChanged = (filterText, selectedItems) => {
+    onResolveSuggestions = (filterText, selectedItems) => {
       return filterText
-        ? _optionSets
+        ? optionSets
             .filter(
               option =>
                 !option.name.toLowerCase().indexOf(filterText.toLowerCase())
@@ -87,17 +80,18 @@ const OptionSetsBox = props => {
         <div ref={divRef}>
           <TagPicker
             disabled={disabled}
-            onResolveSuggestions={onFilterChanged}
             getTextFromItem={getTextFromItem}
+            itemLimit={isMultipleSelect ? undefined : 1}
+            pickerSuggestionsProps={{
+              suggestionsHeaderText: "Options",
+              noResultsFoundText: "No Options Found"
+            }}
             selectedItems={_selectedItems}
             onChange={items => {
               setSelectedItems(items);
               onChange && onChange(items);
             }}
-            pickerSuggestionsProps={{
-              suggestionsHeaderText: "Options",
-              noResultsFoundText: "No Options Found"
-            }}
+            onResolveSuggestions={onResolveSuggestions}
           />
         </div>
         <IconButton
@@ -127,7 +121,7 @@ const OptionSetsBox = props => {
                 onClick: () => {
                   setSelectedItems(
                     _selectedItems.concat(
-                      _optionSets.filter(o =>
+                      optionSets.filter(o =>
                         _selectedItems.every(s => s.key !== o.key)
                       )
                     )
@@ -157,8 +151,8 @@ const OptionSetsBox = props => {
           />
         )}
         <Stack tokens={{ childrenGap: 8 }} horizontal wrap verticalAlign="end">
-          {_optionSets
-            .filter(o => _selectedItems.every(s => s.key !== o.key))
+          {optionSets
+            .filter(o => _selectedItems.every(s => s && s.key !== o.key))
             .map(o => (
               <ActionButton
                 iconProps={{ iconName: isMultipleSelect ? "Add" : "Switch" }}

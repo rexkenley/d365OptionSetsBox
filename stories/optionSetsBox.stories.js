@@ -4,8 +4,9 @@ import { action } from "@storybook/addon-actions";
 
 import OptionSetsBox from "../src/jsx/optionSetsBox";
 
-const optionSets = {};
-for (let i = 0; i < 20; i += 1) optionSets[`Option ${i}`] = i;
+const optionSets = [];
+for (let i = 0; i < 20; i += 1)
+  optionSets.push({ key: i, name: `Option ${i}` });
 
 storiesOf("OptionSetsBox", module)
   .add("Initial", () => <OptionSetsBox />)
