@@ -5,7 +5,7 @@ import { action } from "@storybook/addon-actions";
 import OptionSetsBox from "../src/jsx/optionSetsBox";
 
 const optionSets = [];
-for (let i = 0; i < 20; i += 1)
+for (let i = 1; i < 21; i += 1)
   optionSets.push({ key: i, name: `Option ${i}` });
 
 storiesOf("OptionSetsBox", module)
@@ -13,6 +13,12 @@ storiesOf("OptionSetsBox", module)
   .add("with props hidden", () => <OptionSetsBox hidden />)
   .add("with props disabled", () => <OptionSetsBox disabled />)
   .add("with props optionSets", () => <OptionSetsBox optionSets={optionSets} />)
+  .add("with props optionSets and value 0", () => (
+    <OptionSetsBox optionSets={optionSets} value={0} />
+  ))
+  .add("with props optionSets and value 10", () => (
+    <OptionSetsBox optionSets={optionSets} value={10} />
+  ))
   .add("with props onChange and optionSets", () => (
     <OptionSetsBox onChange={action("onChange")} optionSets={optionSets} />
   ))

@@ -58,18 +58,14 @@ const OptionSetsBox = props => {
       return item.name;
     },
     [_showAvailable, setShowAvailable] = useState(false),
-    [_selectedItems, setSelectedItems] = useState([]),
-    onClick = val => {
-      if (isMultipleSelect) setSelectedItems(_selectedItems.concat([val]));
-      else {
-        setSelectedItems([val]);
-        setShowAvailable(false);
-      }
-    };
+    [_selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
     setShowAvailable(false);
-    setSelectedItems([]);
+
+    if (optionSets && value)
+      setSelectedItems([optionSets.find(os => os.key === value)]);
+    else setSelectedItems([]);
   }, [optionSets, value]);
 
   if (hidden) return <Fabric />;
@@ -127,6 +123,7 @@ const OptionSetsBox = props => {
                     )
                   );
                   setShowAvailable(false);
+                  onChange && onChange(optionSets);
                 }
               },
               {
@@ -135,6 +132,7 @@ const OptionSetsBox = props => {
                 onClick: () => {
                   setSelectedItems([]);
                   setShowAvailable(false);
+                  onChange && onChange([]);
                 }
               }
             ]}
@@ -151,18 +149,30 @@ const OptionSetsBox = props => {
           />
         )}
         <Stack tokens={{ childrenGap: 8 }} horizontal wrap verticalAlign="end">
-          {optionSets
-            .filter(o => _selectedItems.every(s => s && s.key !== o.key))
-            .map(o => (
-              <ActionButton
-                iconProps={{ iconName: isMultipleSelect ? "Add" : "Switch" }}
-                key={o.key}
-                text={o.name}
-                onClick={() => {
-                  onClick(o);
-                }}
-              />
-            ))}
+          {optionSets &&
+            optionSets
+              .filter(os => _selectedItems.every(si => si && si.key !== os.key))
+              .map(os => (
+                <ActionButton
+                  iconProps={{ iconName: isMultipleSelect ? "Add" : "Switch" }}
+                  key={os.key}
+                  text={os.name}
+                  onClick={() => {
+                    let newSelection;
+
+                    if (isMultipleSelect) {
+                      newSelection = _selectedItems.concat([os]);
+                      setSelectedItems(newSelection);
+                    } else {
+                      newSelection = [os];
+                      setSelectedItems(newSelection);
+                      setShowAvailable(false);
+                    }
+
+                    onChange && onChange(newSelection);
+                  }}
+                />
+              ))}
         </Stack>
       </Callout>
     </Fabric>

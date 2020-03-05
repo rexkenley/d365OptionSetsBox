@@ -14,6 +14,16 @@ export class OptionSetsBox
   private isControlDisabled: boolean;
   private isVisible: boolean;
 
+  equivalent(parameters) {
+    const { value } = parameters;
+    return value && value.raw === this.value;
+  }
+
+  syncData(parameters) {
+    const { value } = parameters;
+    this.value = (value && value.raw) || null;
+  }
+
   /**
    * Used to initialize the control instance. Controls can kick off remote server calls and other initialization actions here.
    * Data-set values are not initialized here, use updateView.
@@ -44,7 +54,6 @@ export class OptionSetsBox
     this.isVisible = isVisible;
 
     ReactDOM.render(
-      // @ts-ignore
       React.createElement(OsB, {
         optionSets: this.optionSets,
         value: this.value,
@@ -68,12 +77,24 @@ export class OptionSetsBox
    */
   public updateView(context: ComponentFramework.Context<IInputs>): void {
     const { parameters, mode } = context,
-      { value } = parameters,
       { isControlDisabled, isVisible } = mode;
 
-    this.value = value && value.raw;
+    if (this.updatedByReact) {
+      if (this.equivalent(parameters)) this.updatedByReact = false;
+
+      return;
+    }
+
+    if (
+      this.equivalent(parameters) &&
+      this.isControlDisabled === isControlDisabled &&
+      this.isVisible === isVisible
+    )
+      return;
+
     this.isControlDisabled = isControlDisabled;
     this.isVisible = isVisible;
+    this.syncData(parameters);
 
     ReactDOM.render(
       React.createElement(OsB, {
