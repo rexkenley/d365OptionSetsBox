@@ -27,7 +27,7 @@ initializeIcons();
  */
 
 /**
- * AdddressBox
+ * OptionSetsBox
  * @module optionSetsBox/OptionSetsBox
  * @function
  * @param {OptionSetsBoxProps} props
