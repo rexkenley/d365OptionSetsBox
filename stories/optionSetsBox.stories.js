@@ -1,4 +1,5 @@
 import React from "react";
+import { initializeIcons } from "@uifabric/icons";
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 
@@ -7,6 +8,8 @@ import OptionSetsBox from "../src/jsx/optionSetsBox";
 const optionSets = [];
 for (let i = 1; i < 21; i += 1)
   optionSets.push({ key: i, name: `Option ${i}` });
+
+initializeIcons();
 
 storiesOf("OptionSetsBox", module)
   .add("Initial", () => <OptionSetsBox />)

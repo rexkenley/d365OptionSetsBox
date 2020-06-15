@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { initializeIcons } from "@uifabric/icons";
 import { IInputs, IOutputs } from "./generated/ManifestTypes";
 
 import OsB from "../src/jsx/optionSetsBox";
@@ -24,6 +25,10 @@ export class OptionSetsBox
     this.value = (value && value.raw) || null;
   }
 
+  constructor() {
+    initializeIcons();
+  }
+
   /**
    * Used to initialize the control instance. Controls can kick off remote server calls and other initialization actions here.
    * Data-set values are not initialized here, use updateView.
@@ -45,7 +50,7 @@ export class OptionSetsBox
     this.container = container;
     this.notifyOutputChanged = notifyOutputChanged;
     // @ts-ignore
-    this.optionSets = value.attributes.Options.map(o => {
+    this.optionSets = value.attributes.Options.map((o) => {
       return { key: o.Value, name: o.Label };
     });
     this.value = value && value.raw;
@@ -60,12 +65,12 @@ export class OptionSetsBox
         isMultipleSelect: false,
         disabled: this.isControlDisabled,
         hidden: !this.isVisible,
-        onChange: items => {
+        onChange: (items) => {
           // @ts-ignore
           this.value = items.length ? items[0].key : null;
           this.updatedByReact = true;
           this.notifyOutputChanged();
-        }
+        },
       }),
       this.container
     );
@@ -103,12 +108,12 @@ export class OptionSetsBox
         isMultipleSelect: false,
         disabled: this.isControlDisabled,
         hidden: !this.isVisible,
-        onChange: items => {
+        onChange: (items) => {
           // @ts-ignore
           this.value = items.length ? items[0].key : null;
           this.updatedByReact = true;
           this.notifyOutputChanged();
-        }
+        },
       }),
       this.container
     );

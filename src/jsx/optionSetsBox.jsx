@@ -1,17 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-  Stack,
-  Callout,
-  DirectionalHint,
-  IconButton,
-  ActionButton
-} from "office-ui-fabric-react";
-import { Fabric } from "office-ui-fabric-react/lib/Fabric";
-import { TagPicker } from "office-ui-fabric-react/lib/Pickers";
-import { CommandBar } from "office-ui-fabric-react/lib/CommandBar";
-import { initializeIcons } from "@uifabric/icons";
-
-initializeIcons();
+import { Stack } from "@fluentui/react/lib/Stack";
+import { Callout, DirectionalHint } from "@fluentui/react/lib/Callout";
+import { IconButton, ActionButton } from "@fluentui/react/lib/Button";
+import { Fabric } from "@fluentui/react/lib/Fabric";
+import { TagPicker } from "@fluentui/react/lib/Pickers";
+import { CommandBar } from "@fluentui/react/lib/CommandBar";
 
 /** @module optionSetsBox */
 
